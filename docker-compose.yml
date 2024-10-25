@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  log-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPLUNK_IP=192.168.220.80      # Cambia a la IP de tu servidor Splunk
+      - SPLUNK_PORT=6514              # Cambia al puerto que has configurado para syslog sobre TLS en Splunk
+      - TLS_CERT_PATH=/app/tls/splunk_cert.pem
+      - TLS_KEY_PATH=/app/tls/splunk_key.pem
+      - CA_CERT_PATH=/app/tls/ca_cert.pem
+    volumes:
+      - ./tls:/app/tls:ro             # Monta el directorio de certificados en el contenedor
+    restart: always
