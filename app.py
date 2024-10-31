@@ -7,16 +7,26 @@ import socket
 
 # Configuración de la conexión TLS
 splunk_ip = os.getenv("SPLUNK_IP", "127.0.0.1")
-splunk_port = int(os.getenv("SPLUNK_PORT", 6514))
+splunk_port = int(os.getenv("SPLUNK_PORT", 514))
 
 # Rutas de los certificados y clave privada TLS
 cert_path = os.getenv("TLS_CERT_PATH", "/app/tls/splunk_cert.pem")
 key_path = os.getenv("TLS_KEY_PATH", "/app/tls/splunk_key.pem")
 ca_cert_path = os.getenv("CA_CERT_PATH", "/app/tls/ca_cert.pem")
 
+
 # Configuración del contexto SSL
 tls_context = ssl.create_default_context(cafile=ca_cert_path)
 tls_context.load_cert_chain(certfile=cert_path, keyfile=key_path)
+tls_context.check_hostname = False
+tls_context.verify_mode = ssl.CERT_NONE
+
+#tls_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+#tls_context.load_verify_locations(cafile=ca_cert_path)  # CA que verifica el servidor
+#tls_context.load_cert_chain(certfile=cert_path, keyfile=key_path)  # Cert y key del cliente
+#tls_context.check_hostname = False  # Desactivar si es necesario
+#tls_context.verify_mode = ssl.CERT_NONE
+
 
 # Configuración del logger
 logger = logging.getLogger('RandomLogGenerator')
